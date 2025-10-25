@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment - IBT Badminton</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Payment Selection Modal -->
+    <div id="paymentModal" class="modal" style="display: none">
+      <div class="modal-content" style="max-width: 600px">
+        <span class="close" onclick="closePaymentModal()">&times;</span>
+        <h2
+          style="
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          "
+        >
+          <span>💳</span> Choose Payment Method
+        </h2>
+
+        <div id="paymentStep1">
+          <div
+            class="booking-summary"
+            style="
+              background: #f9fafb;
+              padding: 20px;
+              border-radius: 12px;
+              margin-bottom: 24px;
+            "
+          >
+            <h3 style="margin-bottom: 16px; font-size: 18px">
+              Booking Summary
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; justify-content: space-between">
+                <span style="color: #6b7280">Court:</span>
+                <strong id="summaryCourtName">-</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between">
+                <span style="color: #6b7280">Date:</span>
+                <strong id="summaryDate">-</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between">
+                <span style="color: #6b7280">Time:</span>
+                <strong id="summaryTime">-</strong>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  padding-top: 12px;
+                  border-top: 2px solid #e5e7eb;
+                  font-size: 20px;
+                "
+              >
+                <span style="color: #6b7280">Total Amount:</span>
+                <strong style="color: #10b981" id="summaryAmount">₱0.00</strong>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+            <button
+              onclick="selectPaymentMethod('walk-in')"
+              class="payment-method-btn"
+              style="
+                padding: 24px;
+                border: 2px solid #e5e7eb;
+                border-radius: 12px;
+                background: white;
+                cursor: pointer;
+                transition: all 0.3s;
+              "
+            >
+              <div style="font-size: 48px; margin-bottom: 12px">🚶</div>
+              <div
+                style="font-weight: 700; font-size: 18px; margin-bottom: 8px"
+              >
+                Walk-in Payment
+              </div>
+              <div style="font-size: 14px; color: #6b7280">
+                Pay at the venue
+              </div>
+            </button>
+
+            <button
+              onclick="selectPaymentMethod('gcash')"
+              class="payment-method-btn"
+              style="
+                padding: 24px;
+                border: 2px solid #e5e7eb;
+                border-radius: 12px;
+                background: white;
+                cursor: pointer;
+                transition: all 0.3s;
+              "
+            >
+              <div style="font-size: 48px; margin-bottom: 12px">💙</div>
+              <div
+                style="font-weight: 700; font-size: 18px; margin-bottom: 8px"
+              >
+                GCash
+              </div>
+              <div style="font-size: 14px; color: #6b7280">Pay online now</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- GCash Payment Step -->
+        <div id="paymentStep2" style="display: none">
+          <button
+            onclick="backToPaymentSelection()"
+            style="
+              background: none;
+              border: none;
+              color: #10b981;
+              font-weight: 600;
+              margin-bottom: 20px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+            "
+          >
+            <span>←</span> Back to payment methods
+          </button>
+
+          <div style="text-align: center; margin-bottom: 24px">
+            <h3 style="margin-bottom: 16px; color: #111827">
+              GCash Payment Instructions
+            </h3>
+            <p style="color: #6b7280; margin-bottom: 20px">
+              Send payment to the GCash number below and upload proof of payment
+            </p>
+          </div>
+
+          <!-- GCash QR Code -->
+          <div
+            style="
+              background: linear-gradient(135deg, #007dff, #0062cc);
+              padding: 24px;
+              border-radius: 16px;
+              text-align: center;
+              margin-bottom: 24px;
+            "
+          >
+            <div
+              style="
+                background: white;
+                padding: 20px;
+                border-radius: 12px;
+                display: inline-block;
+                margin-bottom: 16px;
+              "
+            >
+              <!-- Placeholder QR Code -->
+              <div
+                style="
+                  width: 200px;
+                  height: 200px;
+                  background: #f9fafb;
+                  border: 2px dashed #d1d5db;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border-radius: 8px;
+                "
+              >
+                <div>
+                  <div style="font-size: 48px; margin-bottom: 8px">📱</div>
+                  <div style="font-size: 14px; color: #6b7280">
+                    Scan QR Code
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              style="
+                color: white;
+                font-size: 18px;
+                font-weight: 700;
+                margin-bottom: 8px;
+              "
+            >
+              GCash Number: 09XX-XXX-XXXX
+            </div>
+            <div style="color: rgba(255, 255, 255, 0.9); font-size: 14px">
+              Account Name: IBT Badminton Center
+            </div>
+            <div
+              style="
+                margin-top: 16px;
+                padding: 12px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 8px;
+              "
+            >
+              <div style="color: white; font-size: 24px; font-weight: 800">
+                Amount: <span id="gcashAmount">₱0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upload Proof of Payment -->
+          <div style="margin-bottom: 24px">
+            <label
+              style="
+                display: block;
+                font-weight: 600;
+                color: #374151;
+                margin-bottom: 8px;
+              "
+            >
+              Upload Proof of Payment *
+            </label>
+            <input
+              type="file"
+              id="proofOfPayment"
+              accept="image/*"
+              style="
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #e5e7eb;
+                border-radius: 10px;
+                cursor: pointer;
+              "
+            />
+            <span
+              style="
+                font-size: 12px;
+                color: #6b7280;
+                display: block;
+                margin-top: 8px;
+              "
+            >
+              Accepted formats: JPG, PNG (Max 5MB)
+            </span>
+          </div>
+
+          <!-- Reference Number -->
+          <div style="margin-bottom: 24px">
+            <label
+              style="
+                display: block;
+                font-weight: 600;
+                color: #374151;
+                margin-bottom: 8px;
+              "
+            >
+              GCash Reference Number *
+            </label>
+            <input
+              type="text"
+              id="referenceNumber"
+              placeholder="Enter 13-digit reference number"
+              style="
+                width: 100%;
+                padding: 12px 16px;
+                border: 2px solid #e5e7eb;
+                border-radius: 10px;
+                font-size: 16px;
+              "
+            />
+          </div>
+
+          <!-- Submit Button -->
+          <div class="button-group">
+            <button
+              onclick="submitGCashPayment()"
+              class="btn btn-primary"
+              style="width: 100%"
+            >
+              <span>✓</span> Submit Payment & Confirm Booking
+            </button>
+            <button
+              onclick="closePaymentModal()"
+              class="btn btn-secondary"
+              style="width: 100%"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <!-- Walk-in Confirmation -->
+        <div id="paymentStep3" style="display: none">
+          <div style="text-align: center; margin-bottom: 24px">
+            <div style="font-size: 64px; margin-bottom: 16px">🚶</div>
+            <h3 style="margin-bottom: 16px; color: #111827">
+              Walk-in Payment Selected
+            </h3>
+            <p style="color: #6b7280">
+              You will pay at the venue when you arrive
+            </p>
+          </div>
+
+          <div
+            style="
+              background: #fef3c7;
+              padding: 16px;
+              border-radius: 12px;
+              border: 2px solid #fbbf24;
+              margin-bottom: 24px;
+            "
+          >
+            <div style="display: flex; gap: 12px">
+              <div style="font-size: 24px">⚠️</div>
+              <div>
+                <div
+                  style="font-weight: 700; color: #92400e; margin-bottom: 4px"
+                >
+                  Important Reminder
+                </div>
+                <div style="font-size: 14px; color: #92400e">
+                  Please arrive 15 minutes before your scheduled time. Bring
+                  exact payment amount to speed up the process.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button
+              onclick="confirmWalkInPayment()"
+              class="btn btn-primary"
+              style="width: 100%"
+            >
+              <span>✓</span> Confirm Booking
+            </button>
+            <button
+              onclick="backToPaymentSelection()"
+              class="btn btn-secondary"
+              style="width: 100%"
+            >
+              Back
+            </button>
+          </div>
+        </div>
+
+        <div id="paymentMessage"></div>
+      </div>
+    </div>
+
+    <script>
+      let currentBookingData = {};
+
+      function openPaymentModal(bookingData) {
+        currentBookingData = bookingData;
+
+        // Populate summary
+        document.getElementById("summaryCourtName").textContent =
+          bookingData.courtName;
+        document.getElementById("summaryDate").textContent = formatDate(
+          bookingData.date
+        );
+        document.getElementById("summaryTime").textContent =
+          bookingData.startTime + " - " + bookingData.endTime;
+        document.getElementById("summaryAmount").textContent =
+          "₱" + parseFloat(bookingData.amount).toFixed(2);
+        document.getElementById("gcashAmount").textContent =
+          "₱" + parseFloat(bookingData.amount).toFixed(2);
+
+        // Show modal
+        document.getElementById("paymentModal").style.display = "block";
+        document.getElementById("paymentStep1").style.display = "block";
+        document.getElementById("paymentStep2").style.display = "none";
+        document.getElementById("paymentStep3").style.display = "none";
+      }
+
+      function closePaymentModal() {
+        document.getElementById("paymentModal").style.display = "none";
+        // Reset form
+        document.getElementById("proofOfPayment").value = "";
+        document.getElementById("referenceNumber").value = "";
+      }
+
+      function selectPaymentMethod(method) {
+        if (method === "gcash") {
+          document.getElementById("paymentStep1").style.display = "none";
+          document.getElementById("paymentStep2").style.display = "block";
+        } else if (method === "walk-in") {
+          document.getElementById("paymentStep1").style.display = "none";
+          document.getElementById("paymentStep3").style.display = "block";
+        }
+      }
+
+      function backToPaymentSelection() {
+        document.getElementById("paymentStep1").style.display = "block";
+        document.getElementById("paymentStep2").style.display = "none";
+        document.getElementById("paymentStep3").style.display = "none";
+      }
+
+      async function submitGCashPayment() {
+        const proofFile = document.getElementById("proofOfPayment").files[0];
+        const refNumber = document
+          .getElementById("referenceNumber")
+          .value.trim();
+
+        // Validation
+        if (!proofFile) {
+          showPaymentMessage("Please upload proof of payment", "error");
+          return;
+        }
+
+        if (!refNumber || refNumber.length < 10) {
+          showPaymentMessage("Please enter a valid reference number", "error");
+          return;
+        }
+
+        // Check file size (5MB max)
+        if (proofFile.size > 5 * 1024 * 1024) {
+          showPaymentMessage("File size must be less than 5MB", "error");
+          return;
+        }
+
+        try {
+          // Convert image to base64
+          const base64Image = await fileToBase64(proofFile);
+
+          // Create booking with GCash payment
+          const bookingData = {
+            ...currentBookingData,
+            payment_method: "GCash",
+            payment_status: "pending",
+            gcash_reference: refNumber,
+            proof_of_payment: base64Image,
+            payment_proof_filename: proofFile.name,
+          };
+
+          const response = await fetch("create_booking.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(bookingData),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showPaymentMessage(
+              "Booking created! Payment is pending verification.",
+              "success"
+            );
+            setTimeout(() => {
+              closePaymentModal();
+              window.location.href = "dashboard.html";
+            }, 2000);
+          } else {
+            showPaymentMessage(
+              result.message || "Failed to create booking",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          showPaymentMessage("An error occurred. Please try again.", "error");
+        }
+      }
+
+      async function confirmWalkInPayment() {
+        try {
+          const bookingData = {
+            ...currentBookingData,
+            payment_method: "Walk-in",
+            payment_status: "pending",
+          };
+
+          const response = await fetch("create_booking.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(bookingData),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showPaymentMessage(
+              "Booking confirmed! Please pay at the venue.",
+              "success"
+            );
+            setTimeout(() => {
+              closePaymentModal();
+              window.location.href = "dashboard.html";
+            }, 2000);
+          } else {
+            showPaymentMessage(
+              result.message || "Failed to create booking",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          showPaymentMessage("An error occurred. Please try again.", "error");
+        }
+      }
+
+      function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function showPaymentMessage(message, type) {
+        const messageDiv = document.getElementById("paymentMessage");
+        messageDiv.className =
+          type === "success" ? "success-message" : "error-message";
+        messageDiv.textContent = message;
+        messageDiv.style.display = "block";
+
+        setTimeout(() => {
+          messageDiv.style.display = "none";
+        }, 5000);
+      }
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
+
+      // Close modal when clicking outside
+      window.onclick = function (event) {
+        const modal = document.getElementById("paymentModal");
+        if (event.target == modal) {
+          closePaymentModal();
+        }
+      };
+    </script>
+
+    <style>
+      .payment-method-btn:hover {
+        border-color: #10b981 !important;
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+        transform: translateY(-4px);
+      }
+
+      .modal {
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      .modal-content {
+        background-color: white;
+        margin: 50px auto;
+        padding: 32px;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 600px;
+        position: relative;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      .close {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        color: #9ca3af;
+        cursor: pointer;
+      }
+
+      .close:hover {
+        color: #111827;
+      }
+
+      @media (max-width: 768px) {
+        .modal-content {
+          width: 95%;
+          margin: 20px auto;
+          padding: 24px;
+        }
+
+        div[style*="grid-template-columns: 1fr 1fr"] {
+          grid-template-columns: 1fr !important;
+        }
+      }
+    </style>
+  </body>
+</html>
